@@ -22,8 +22,8 @@ def parse_time(time_str):
     return datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
 
 def get_latest_report():
-    api_url_1 = 'https://opendata.cwa.gov.tw/api/v1/rest/datastore/E-A0015-001?Authorization=CWA-62E18FDA-413D-4429-8AE2-34DDA8378A3E&limit=1&offset=0&format=JSON'
-    api_url_2 = 'https://opendata.cwa.gov.tw/api/v1/rest/datastore/E-A0016-001?Authorization=CWA-62E18FDA-413D-4429-8AE2-34DDA8378A3E&limit=1&format=JSON'
+    api_url_1 = ''
+    api_url_2 = ''
 
     report_1 = fetch_earthquake_report(api_url_1)
     report_2 = fetch_earthquake_report(api_url_2)

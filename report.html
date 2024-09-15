@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地震報告</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #495057;
+            font-size: 1.8em;
+            margin-bottom: 15px; 
+        }
+
+        #report {
+            width: 435px;
+            height: 180px;
+            overflow-y: auto;
+            margin: 0 auto;
+            padding: 10px; 
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ced4da;
+        }
+
+        .quake-entry {
+            margin-bottom: 10px; 
+            padding-bottom: 5px; 
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .quake-entry:last-child {
+            margin-bottom: 0; 
+            border-bottom: none;
+        }
+
+        .quake-time {
+            color: #007bff;
+            font-size: 1.2em; 
+            font-weight: bold;
+            margin: 0 0 5px 0; 
+            line-height: 1.3; 
+        }
+
+        .quake-location {
+            margin: 6px 0; 
+            color: #495057;
+            font-size: 1em;
+            line-height: 1.3; 
+            font-weight: bold;
+        }
+
+        .quake-magnitude, .quake-depth {
+            margin-top: 1px; 
+            color: #495057;
+            font-size: 1.1em; 
+            line-height: 0.8; 
+            font-weight: bold;
+        }
+
+        .quake-magnitude {
+            font-weight: bold;
+        }
+
+        .quake-image {
+            display: block;
+            margin-top: 5px; 
+            max-width: 120px;
+            height: auto;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>地震報告</h1>
+    <div id="report"></div>
+
+    <script>
+        const reportDiv = document.getElementById('report');
+        const ws = new WebSocket('ws://localhost:8765/');
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            reportDiv.innerHTML = '';
+
+            data.forEach(quake => {
+                const magnitude = parseFloat(quake.magnitude);
+                const FocalDepth = quake.FocalDepth;  
+                let imgSrc = '';
+
+                if (magnitude >= 6.0) {
+                    imgSrc = 'images/bad.png';  
+                } else if (magnitude >= 4.0) {
+                    imgSrc = 'images/notgood.png'; 
+                } else {
+                    imgSrc = 'images/good.png'; 
+                }
+
+                reportDiv.innerHTML += `
+                    <div class="quake-entry">
+                        <p class="quake-time">時間: ${quake.time}</p>
+                        <p class="quake-location">發生地點: ${quake.location}</p>
+                        <p class="quake-magnitude">芮氏規模: ${quake.magnitude}</p>
+                        <p class="quake-depth">深度: ${FocalDepth} 公里</p>
+                        <img src="${imgSrc}" alt="地震強度" class="quake-image">
+                    </div>
+                `;
+            });
+        };
+    </script>
+</body>
+</html>
